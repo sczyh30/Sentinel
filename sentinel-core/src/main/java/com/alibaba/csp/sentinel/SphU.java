@@ -200,4 +200,14 @@ public class SphU {
     public static Entry entry(String name, EntryType type, int count, Object... args) throws BlockException {
         return Env.sph.entry(name, type, count, args);
     }
+
+    /**
+     * Checking all rules about the asynchronous resource.
+     *
+     * @param name the unique name of the protected resource
+     * @throws BlockException if the block criteria is met, eg. when any rule's threshold is exceeded
+     */
+    public static AsyncEntry asyncEntry(String name) throws BlockException {
+        return Env.sph.asyncEntry(name, EntryType.OUT, 1, OBJECTS0);
+    }
 }

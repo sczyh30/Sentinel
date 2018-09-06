@@ -62,17 +62,14 @@ public class CtSph implements Sph {
             context = MyContextUtil.myEnter(Constants.CONTEXT_DEFAULT_NAME, "", resourceWrapper.getType());
         }
 
-        // Global switch is close, no rule checking will do.
+        // Global switch is turned off, so no rule checking will be done.
         if (!Constants.ON) {
             return new AsyncEntry(resourceWrapper, null, context);
         }
 
         ProcessorSlot<Object> chain = lookProcessChain(resourceWrapper);
 
-        /*
-         * Means processor cache size exceeds {@link Constants.MAX_SLOT_CHAIN_SIZE}, so no
-         * rule checking will be done.
-         */
+        // Means processor cache size exceeds {@link Constants.MAX_SLOT_CHAIN_SIZE}, so no rule checking will be done.
         if (chain == null) {
             return new AsyncEntry(resourceWrapper, null, context);
         }
@@ -80,6 +77,7 @@ public class CtSph implements Sph {
         AsyncEntry asyncEntry = new AsyncEntry(resourceWrapper, chain, context);
         try {
             chain.entry(context, resourceWrapper, null, count, args);
+            // Initiate the async context.
             asyncEntry.setUpAsyncContext();
         } catch (BlockException e1) {
             asyncEntry.exit(count, args);
@@ -87,24 +85,11 @@ public class CtSph implements Sph {
         } catch (Throwable e1) {
             RecordLog.info("Sentinel unexpected exception", e1);
         } finally {
-            cleanCurrentEntryInLocal(context, asyncEntry);
+            // The asynchronous call may take time in background, and current context should not be hanged on it.
+            // So we need to remove current async entry from current context.
+            asyncEntry.cleanCurrentEntryInLocal();
         }
         return asyncEntry;
-    }
-
-    private void cleanCurrentEntryInLocal(Context context, AsyncEntry entry) {
-        if (context != null) {
-            Entry curEntry = context.getCurEntry();
-            if (curEntry == entry) {
-                Entry parent = entry.parent;
-                context.setCurEntry(parent);
-                if (parent != null) {
-                    ((CtEntry)parent).child = null;
-                }
-            } else {
-                throw new IllegalStateException("Context fucked up");
-            }
-        }
     }
 
     /**

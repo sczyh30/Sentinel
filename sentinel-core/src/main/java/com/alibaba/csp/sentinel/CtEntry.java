@@ -7,6 +7,7 @@ import com.alibaba.csp.sentinel.slotchain.ProcessorSlot;
 import com.alibaba.csp.sentinel.slotchain.ResourceWrapper;
 
 /**
+ * @author jialiang.linjl
  * @author Eric Zhao
  */
 class CtEntry extends Entry {
