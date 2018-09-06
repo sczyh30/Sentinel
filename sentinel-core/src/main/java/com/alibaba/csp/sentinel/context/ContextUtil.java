@@ -175,4 +175,20 @@ public class ContextUtil {
     public static Context getContext() {
         return contextHolder.get();
     }
+
+    public static Context replaceContext(Context newContext) {
+        Context backupContext = contextHolder.get();
+        if (newContext == null) {
+            contextHolder.remove();
+        } else {
+            contextHolder.set(newContext);
+        }
+        return backupContext;
+    }
+
+    public static void runOnContext(Context context, Runnable f) {
+        Context curContext = replaceContext(context);
+        f.run();
+        replaceContext(curContext);
+    }
 }

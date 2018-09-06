@@ -142,4 +142,5 @@ public interface Sph {
      */
     Entry entry(String name, EntryType type, int count, Object... args) throws BlockException;
 
+    AsyncEntry asyncEntry(String name, EntryType type, int count, Object... args) throws BlockException;
 }

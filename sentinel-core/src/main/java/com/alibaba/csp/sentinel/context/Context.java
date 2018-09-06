@@ -75,10 +75,24 @@ public class Context {
      */
     private String origin = "";
 
+    private final boolean async;
+
+    public static Context newAsyncContext(DefaultNode entranceNode, String name) {
+        return new Context(name, entranceNode, true);
+    }
+
     public Context(DefaultNode entranceNode, String name) {
-        super();
+        this(name, entranceNode, false);
+    }
+
+    public Context(String name, DefaultNode entranceNode, boolean async) {
         this.name = name;
         this.entranceNode = entranceNode;
+        this.async = async;
+    }
+
+    public boolean isAsync() {
+        return async;
     }
 
     public String getName() {
@@ -89,24 +103,27 @@ public class Context {
         return curEntry.getCurNode();
     }
 
-    public void setCurNode(Node node) {
+    public Context setCurNode(Node node) {
         this.curEntry.setCurNode(node);
+        return this;
     }
 
     public Entry getCurEntry() {
         return curEntry;
     }
 
-    public void setCurEntry(Entry curEntry) {
+    public Context setCurEntry(Entry curEntry) {
         this.curEntry = curEntry;
+        return this;
     }
 
     public String getOrigin() {
         return origin;
     }
 
-    public void setOrigin(String origin) {
+    public Context setOrigin(String origin) {
         this.origin = origin;
+        return this;
     }
 
     public double getOriginTotalQps() {
