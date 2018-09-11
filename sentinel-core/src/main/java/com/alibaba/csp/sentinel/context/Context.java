@@ -58,7 +58,7 @@ public class Context {
     /**
      * Context name.
      */
-    private String name;
+    private final String name;
 
     /**
      * The entrance node of current invocation tree.
@@ -71,12 +71,20 @@ public class Context {
     private Entry curEntry;
 
     /**
-     * the origin of this context, usually the origin is the Service Consumer's app name.
+     * The origin of this context (usually indicate different invokers, e.g. service consumer name or origin IP).
      */
     private String origin = "";
 
     private final boolean async;
 
+    /**
+     * Create a new async context.
+     *
+     * @param entranceNode entrance node of the context
+     * @param name context name
+     * @return the new created context
+     * @since 0.2.0
+     */
     public static Context newAsyncContext(DefaultNode entranceNode, String name) {
         return new Context(name, entranceNode, true);
     }
